@@ -13,9 +13,15 @@ cd LineBankVerify
 
 ## 📦Package Requirement
 ```bash
+# Install Pytest and Playwright
 pip install pytest-playwright
 playwright install
 pip install pillow
+```
+
+## 🚀Run Command (Change name same file Bank You Use)
+```bash
+pytest krungthai.py
 ```
 
 ## 🏛️Bank Support
