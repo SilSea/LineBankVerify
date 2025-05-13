@@ -2,11 +2,11 @@ from playwright.sync_api import sync_playwright
 import os
 import time
 
-# กรอก Email และ Password ของ Line
+# Variable for Email and Password
 email = ""
 password = ""
 
-# อ่าน Email และ Password จากไฟล์
+# Read Email and Password from setting.txt
 with open("setting.txt", "r", encoding="utf-8") as f:
     for line in f:
         line = line.strip()
@@ -15,17 +15,17 @@ with open("setting.txt", "r", encoding="utf-8") as f:
         elif line.startswith("password"):
             password = line.split('"')[1]
 
+# Function Call Krungthai
 def test_krungthai():
     with sync_playwright() as p:
-
-        # ทำการหา path ของไฟล์ฺ
+        # Search path from file
         base_dir = os.path.dirname(os.path.abspath(__file__))
-        # ตั้งค่า path ของ extension
+        # Setting path for extension
         extension_path = os.path.join(base_dir, "extension", "ophjlpahpchlmihnnnihgmmeilfjmjjc", "3.6.1_0")
-        # ตั้งค่า path ของ tmp/user_data เพื่อเก็บข้อมูลการใช้งานชั่วคราว
+        # Setting path for tmp/user_data collection temporary
         user_data_dir = os.path.join(base_dir, "tmp", "user_data")
 
-        # กำหนดให้ Playwright ใช้ Chromium และโหลด extension Line
+        # Setting Playwright use Chromium and load extension Line
         context = p.chromium.launch_persistent_context(
             user_data_dir=user_data_dir,
             headless=False,
@@ -35,87 +35,88 @@ def test_krungthai():
             ]
         )
 
-        # เปิดหน้าเว็บที Line
+        # Open tab Line
         page = context.new_page()
         page.goto("chrome-extension://ophjlpahpchlmihnnnihgmmeilfjmjjc/index.html#", wait_until="commit")
 
-        # เว้นระยะเวลา 3 วินาทีเพื่อให้หน้าโหลดเสร็จ
+        # Wait 3 seconds for the page to load
         time.sleep(3)
 
-        # เข้าสู่ระบบ Line
+        # Login Line
         page.fill('input[name="email"]', email)
         page.fill('input[name="password"]', password)
         login_button = page.wait_for_selector('span:text("Log in")')
-        # ค้นหาข้อความ Log in
+        # Search Log in text
         current_element = login_button
-        # หา parentElement ของข้อความ "Log in"
+        # Find parentElement from text "Log in"
         for _ in range(2):
             current_element = current_element.evaluate_handle("e => e.parentElement")
-        # หาปุ่มทั้งหมดใน parentElement
-        login_button_open = current_element.query_selector_all("button")
-        # กดปุ่มเพื่อเข้าสู่ระบบ
-        login_button_open[0].click()
+        # Serach all button in parentElement
+        login_button_list = current_element.query_selector_all("button")
+        # Click button login
+        login_button_list[0].click()
 
-        # เว้นระยะเวลา 3 วินาทีเพื่อให้หน้าโหลดเสร็จ
+        # Wait 3 seconds for the page to load
         time.sleep(3)
 
-        # เปิดหมวดช่องแชท
+        # Open Chat Category
         find_chat = page.wait_for_selector('[aria-label="Chat"]')
         find_chat.click()
-        # เว้นระยะเวลา 3 วินาทีเพื่อให้หน้าโหลดเสร็จ
+        # Wait 3 seconds for the page to load
         time.sleep(3)
-        # ค้นหาแชท Krungthai Connext
+        # Search Chat Krungthai Connext
         krungthai_chat = page.wait_for_selector("span:text('Krungthai Connext')")
-        # หา parentElement ของข้อความ "Krungthai Connext"
+        # Find parentElement from text "Krungthai Connext"
         current_element = krungthai_chat
         for _ in range(5):
             current_element = current_element.evaluate_handle("e => e.parentElement")
-        # หาปุ่มทั้งหมดใน parentElement
+        # Search all button in parentElement
         krungthai_chat_open = current_element.query_selector_all("button")
-        # กดปุ่มเพื่อเปิดแชท
+        # Click button open chat
         krungthai_chat_open[1].click()
 
+        # Wait 5 seconds for the page to load
         time.sleep(5)
 
-        # หาทุก element ที่ attribute data-message-content เริ่มด้วย "เงินเข้า"
+        # Find all element attribute data-message-content start with text "เงินเข้า"
         locator = page.locator("xpath=//*[starts-with(@data-message-content, 'เงินเข้า')]")
-        # นับจำนวน element ที่พบ
+        # Count all element found
         last_count = locator.count()  # เก็บค่า count ของครั้งแรก
-        # เช็คว่ามี element ที่ขึ้นต้นด้วย "เงินเข้า" หรือไม่
+        # Check element start with text "เงินเข้า"
         assert last_count > 0, "ไม่พบ element ที่ขึ้นต้นด้วย 'เงินเข้า'"
 
-        # เขียนข้อมูลลง transetion_history.txt
+        # Write data to transetion_history.txt
         with open("transaction_history.txt", "w", encoding="utf-8") as f:
             for i in range(last_count):
                 content_div = locator.nth(i).locator("div.content")
-                # ค้นหา span ทั้งหมดภายใน div.content
+                # Search span all in div.content
                 spans = content_div.first.locator("span")
                 span_count = spans.count()
 
-                # รวมข้อความในแต่ละ span ด้วยเครื่องหมาย comma
+                # Combine span with comma
                 texts = []
                 for j in range(span_count):
                     text = spans.nth(j).inner_text().strip()
                     if text:
                         texts.append(text)
 
-                # เขียนผลลัพธ์ลงไฟล์
+                # Write to file
                 f.write(",".join(texts) + "\n")
 
         try:
-            # รันลูปรองเช็คการเปลี่ยนแปลงของ locator
+            # Loop check new message
             while True:
                 time.sleep(5)
-                # เช็คค่าของ locator ใหม่ทุกๆ 5 วินาที
+                # Check new message every 5 seconds
                 current_count = locator.count()
 
-                # ถ้ามีการเพิ่มของ locator
+                # If have new message เงินเข้า
                 if current_count > last_count:
-                    # เตรียมข้อมูลใหม่
+                    # New data
                     new_lines = []
                     for i in range(last_count, current_count):
                         try:
-                            # ดึงรายการใหม่ทีละรายการจริง ๆ
+                            # Get all data from element
                             content_div = locator.nth(i).locator("div.content")
                             spans = content_div.locator("span")
                             span_count = spans.count()
@@ -132,20 +133,20 @@ def test_krungthai():
                         except Exception as e:
                             print("Error")
 
-                    # อ่านข้อมูลเก่าจากไฟล์ (ถ้ามี)
+                    # Read old file if have
                     try:
                         with open("transaction_history.txt", "r", encoding="utf-8") as f:
                             old_lines = f.readlines()
                     except FileNotFoundError:
                         old_lines = []
 
-                    # เขียนใหม่ทั้งหมด โดย new อยู่ด้านบน
+                    # Write new data and new data to top
                     with open("transaction_history.txt", "w", encoding="utf-8") as f:
                         for line in new_lines:
                             f.write(line + "\n")
                         f.writelines(old_lines)
                     
-                    # อัพเดต last_count เพื่อใช้ในการตรวจสอบรอบถัดไป
+                    # Update last_count to check new message
                     last_count = current_count
             
         except KeyboardInterrupt:
