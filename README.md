@@ -1,5 +1,5 @@
 # LineBankVerify
-This project create for get data transaction from line messages from bank and upload transaction to database
+This project create for get data transaction in line chat send from bank and upload transaction to database
 
 🛠️Develop on Python🛠️
 
