@@ -19,7 +19,7 @@ playwright install
 pip install pillow
 ```
 
-## ⚙️Config setting file to use login line
+## ⚙️Config setting.txt file to use login line
 
 email : "input email here"
 
