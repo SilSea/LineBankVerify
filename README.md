@@ -19,6 +19,11 @@ playwright install
 pip install pillow
 ```
 
+## ⚙️Config setting file to use login line
+
+email : ""
+password : ""
+
 ## 🚀Run Command (Change name same file Bank You Use)
 ```bash
 pytest krungthai.py
