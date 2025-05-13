@@ -102,23 +102,39 @@ def test_linebankverify():
 
                 # ถ้ามีการเพิ่มของ locator
                 if current_count > last_count:
-                    # เขียนข้อมูลใหม่ลง transaction_history.txt
-                    with open("transaction_history.txt", "a", encoding="utf-8") as f:
-                        for i in range(last_count, current_count):
+                    # เตรียมข้อมูลใหม่
+                    new_lines = []
+                    for i in range(last_count, current_count):
+                        try:
+                            # ดึงรายการใหม่ทีละรายการจริง ๆ
                             content_div = locator.nth(i).locator("div.content")
-                            # ค้นหา span ทั้งหมดภายใน div.content
-                            spans = content_div.first.locator("span")
+                            spans = content_div.locator("span")
                             span_count = spans.count()
-
-                            # รวมข้อความในแต่ละ span ด้วยเครื่องหมาย comma
+                            
                             texts = []
                             for j in range(span_count):
                                 text = spans.nth(j).inner_text().strip()
                                 if text:
                                     texts.append(text)
 
-                            # เขียนผลลัพธ์ลงไฟล์
-                            f.write(",".join(texts) + "\n")
+                            line = ",".join(texts)
+                            new_lines.append(line)
+
+                        except Exception as e:
+                            print("Error")
+
+                    # อ่านข้อมูลเก่าจากไฟล์ (ถ้ามี)
+                    try:
+                        with open("transaction_history.txt", "r", encoding="utf-8") as f:
+                            old_lines = f.readlines()
+                    except FileNotFoundError:
+                        old_lines = []
+
+                    # เขียนใหม่ทั้งหมด โดย new อยู่ด้านบน
+                    with open("transaction_history.txt", "w", encoding="utf-8") as f:
+                        for line in new_lines:
+                            f.write(line + "\n")
+                        f.writelines(old_lines)
                     
                     # อัพเดต last_count เพื่อใช้ในการตรวจสอบรอบถัดไป
                     last_count = current_count
