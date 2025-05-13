@@ -6,6 +6,15 @@ import time
 email = ""
 password = ""
 
+# อ่าน Email และ Password จากไฟล์
+with open("setting.txt", "r", encoding="utf-8") as f:
+    for line in f:
+        line = line.strip()
+        if line.startswith("email"):
+            email = line.split('"')[1]
+        elif line.startswith("password"):
+            password = line.split('"')[1]
+
 def test_krungthai():
     with sync_playwright() as p:
 
