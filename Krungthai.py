@@ -6,7 +6,7 @@ import time
 email = ""
 password = ""
 
-def test_linebankverify():
+def test_krungthai():
     with sync_playwright() as p:
 
         # ทำการหา path ของไฟล์ฺ
