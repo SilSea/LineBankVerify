@@ -1,6 +1,6 @@
 # <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/LINE_logo.svg/2048px-LINE_logo.svg.png" width="30px" height="auto" /> LineBankVerify
 
-This project create for get data transaction in line chat send from bank and upload transaction to database
+This project is created to extract transaction data from messages sent by banks via the LINE chat application, and upload the transactions to a database.
 
 ## 🛠️Develop on Python
 
