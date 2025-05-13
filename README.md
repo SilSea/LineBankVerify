@@ -9,11 +9,13 @@ This project create for get data transaction in line chat send from bank and upl
 git clone https://github.com/SilSea/LineBankVerify.git
 cd LineBankVerify
 
-# Package Requirement
+```
+
+## 📦Package Requirement
+```bash
 pip install pytest-playwright
 playwright install
 pip install pillow
-
 ```
 
 ## 🏛️Bank Support
