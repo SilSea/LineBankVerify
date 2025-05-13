@@ -20,10 +20,10 @@ pip install pillow
 ```
 
 ## ⚙️Config setting.txt file to use login line
-
+```bash
 email : "input email here"
-
 password : "input password here"
+```
 
 ## 🚀Run Command (Change name same file Bank You Use)
 ```bash
