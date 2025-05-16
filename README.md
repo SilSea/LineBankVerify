@@ -22,7 +22,7 @@ pip install pillow
 
 ## ⚙️Config setting.txt file to use login Line Application <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/LINE_logo.svg/2048px-LINE_logo.svg.png" width="30px" height="auto" />
 
-(You can log in using a QR code by providing a file with the name ending in 'QR')
+(You can login using a QR code by providing a file with the name ending in 'QR')
 
 ```bash
 email : "input email here"
