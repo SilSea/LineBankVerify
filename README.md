@@ -30,6 +30,8 @@ password : "input password here"
 ```
 
 ## 🚀Run Command (Change name same file Bank You Use)
+
+(Example)
 ```bash
 pytest krungthai.py
 ```
