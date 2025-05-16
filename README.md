@@ -20,7 +20,7 @@ playwright install
 pip install pillow
 ```
 
-## ⚙️Config setting.txt file to use login line
+## ⚙️Config setting.txt file to use login Line Application <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/LINE_logo.svg/2048px-LINE_logo.svg.png" width="30px" height="auto" />
 ```bash
 email : "input email here"
 password : "input password here"
