@@ -1,2 +1,2 @@
-email : ""
-password : ""s
+email : "" #input email here
+password : "" #input password here
