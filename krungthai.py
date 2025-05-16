@@ -86,7 +86,7 @@ def test_krungthai():
         assert last_count > 0, "ไม่พบ element ที่ขึ้นต้นด้วย 'เงินเข้า'"
 
         # Write data to transetion_history.txt
-        with open("transaction_history.txt", "w", encoding="utf-8") as f:
+        with open("logs/transaction_krungthai.txt", "w", encoding="utf-8") as f:
             for i in range(last_count):
                 content_div = locator.nth(i).locator("div.content")
                 # Search span all in div.content
@@ -135,13 +135,13 @@ def test_krungthai():
 
                     # Read old file if have
                     try:
-                        with open("transaction_history.txt", "r", encoding="utf-8") as f:
+                        with open("logs/transaction_krungthai.txt", "r", encoding="utf-8") as f:
                             old_lines = f.readlines()
                     except FileNotFoundError:
                         old_lines = []
 
                     # Write new data and new data to top
-                    with open("transaction_history.txt", "w", encoding="utf-8") as f:
+                    with open("logs/transaction_krungthai.txt", "w", encoding="utf-8") as f:
                         for line in new_lines:
                             f.write(line + "\n")
                         f.writelines(old_lines)
