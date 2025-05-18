@@ -22,7 +22,6 @@ pip install pillow
 
 ## 🚀Run Command
 
-(Example)
 ```bash
 python main.py
 ```
