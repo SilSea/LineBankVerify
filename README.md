@@ -20,20 +20,18 @@ playwright install
 pip install pillow
 ```
 
-## ⚙️Config setting.txt file to use login Line Application <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/LINE_logo.svg/2048px-LINE_logo.svg.png" width="30px" height="auto" />
-
-(You can login using a QR code by providing a file with the name ending in 'QR')
-
-```bash
-email : "input email here"
-password : "input password here"
-```
-
-## 🚀Run Command (Change name same file Bank You Use)
+## 🚀Run Command
 
 (Example)
 ```bash
-pytest krungthai.py
+python main.py
+```
+
+## 💾The notification transaction has been saved in logs/(bankname).txt
+
+(Example)
+```bash
+logs/transaction_krungthai.txt
 ```
 
 ## 🏛️Bank Support

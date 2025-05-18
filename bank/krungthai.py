@@ -2,16 +2,30 @@ from playwright.sync_api import sync_playwright
 import os
 import time
 
+# Search path from file
+file_dir = os.path.dirname(os.path.abspath(__file__))
+base_dir = os.path.dirname(file_dir)
+# Setting path for extension
+extension_path = os.path.join(base_dir, "extension", "ophjlpahpchlmihnnnihgmmeilfjmjjc", "3.6.1_0")
+# Setting path for tmp/user_data collection temporary
+user_data_dir = os.path.join(base_dir, "tmp", "user_data")
+
+# Variable for Email and Password
+email = ""
+password = ""
+
+# Read Email and Password from setting.txt
+with open(base_dir + "/setting.txt", "r", encoding="utf-8") as f:
+    for line in f:
+        line = line.strip()
+        if line.startswith("email"):
+            email = line.split('"')[1]
+        elif line.startswith("password"):
+            password = line.split('"')[1]
+
 # Function Call Krungthai
 def test_krungthai():
     with sync_playwright() as p:
-        # Search path from file
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        # Setting path for extension
-        extension_path = os.path.join(base_dir, "extension", "ophjlpahpchlmihnnnihgmmeilfjmjjc", "3.6.1_0")
-        # Setting path for tmp/user_data collection temporary
-        user_data_dir = os.path.join(base_dir, "tmp", "user_data")
-
         # Setting Playwright use Chromium and load extension Line
         context = p.chromium.launch_persistent_context(
             user_data_dir=user_data_dir,
@@ -25,6 +39,23 @@ def test_krungthai():
         # Open tab Line
         page = context.new_page()
         page.goto("chrome-extension://ophjlpahpchlmihnnnihgmmeilfjmjjc/index.html#", wait_until="commit")
+
+        # Wait 3 seconds for the page to load
+        time.sleep(3)
+
+        # Login Line
+        page.fill('input[name="email"]', email)
+        page.fill('input[name="password"]', password)
+        login_button = page.wait_for_selector('span:text("Log in")')
+        # Search Log in text
+        current_element = login_button
+        # Find parentElement from text "Log in"
+        for _ in range(2):
+            current_element = current_element.evaluate_handle("e => e.parentElement")
+        # Serach all button in parentElement
+        login_button_list = current_element.query_selector_all("button")
+        # Click button login
+        login_button_list[0].click()
 
         # Wait 3 seconds for the page to load
         time.sleep(3)
@@ -56,7 +87,7 @@ def test_krungthai():
         assert last_count > 0, "ไม่พบ element ที่ขึ้นต้นด้วย 'เงินเข้า'"
 
         # Write data to transetion_history.txt
-        with open("logs/transaction_krungthai.txt", "w", encoding="utf-8") as f:
+        with open(base_dir + "/logs/transaction_krungthai.txt", "w", encoding="utf-8") as f:
             for i in range(last_count):
                 content_div = locator.nth(i).locator("div.content")
                 # Search span all in div.content
@@ -105,13 +136,13 @@ def test_krungthai():
 
                     # Read old file if have
                     try:
-                        with open("logs/transaction_krungthai.txt", "r", encoding="utf-8") as f:
+                        with open(base_dir + "/logs/transaction_krungthai.txt", "r", encoding="utf-8") as f:
                             old_lines = f.readlines()
                     except FileNotFoundError:
                         old_lines = []
 
                     # Write new data and new data to top
-                    with open("logs/transaction_krungthai.txt", "w", encoding="utf-8") as f:
+                    with open(base_dir + "/logs/transaction_krungthai.txt", "w", encoding="utf-8") as f:
                         for line in new_lines:
                             f.write(line + "\n")
                         f.writelines(old_lines)
