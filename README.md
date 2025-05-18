@@ -28,9 +28,11 @@ python main.py
 
 ## 💾The notification transaction has been saved in logs/(bankname).txt
 
-(Example)
 ```bash
-logs/transaction_krungthai.txt
+logs/transaction_gsb.txt # GSB
+logs/transaction_krungthai.txt # Krungthai
+logs/transaction_kasikornbank.txt # Kasikornbank
+logs/transaction_scb.txt # SCB
 ```
 
 ## 🏛️Bank Support
