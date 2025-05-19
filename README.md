@@ -26,7 +26,7 @@ pip install pillow
 python main.py
 ```
 
-## 💾The notification transaction has been saved in logs/(bankname).txt
+## 💾The notification transaction has been saved in logs folder
 
 ```bash
 logs/transaction_gsb.txt # GSB
