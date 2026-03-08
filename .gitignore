@@ -1,0 +1,4 @@
+/logs/
+/tmp/
+/.pytest_cache/
+/bank/__pycache__/

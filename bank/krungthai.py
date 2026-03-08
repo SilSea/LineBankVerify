@@ -10,20 +10,6 @@ extension_path = os.path.join(base_dir, "extension", "ophjlpahpchlmihnnnihgmmeil
 # Setting path for tmp/user_data collection temporary
 user_data_dir = os.path.join(base_dir, "tmp", "user_data")
 
-# Variable for Email and Password
-email = ""
-password = ""
-
-# Read Email and Password from setting.txt
-with open(base_dir + "/setting.txt", "r", encoding="utf-8") as f:
-    for line in f:
-        line = line.strip()
-        if line.startswith("email"):
-            email = line.split('"')[1]
-        elif line.startswith("password"):
-            password = line.split('"')[1]
-
-# Function Call Krungthai
 def test_krungthai():
     with sync_playwright() as p:
         # Setting Playwright use Chromium and load extension Line
@@ -40,31 +26,16 @@ def test_krungthai():
         page = context.new_page()
         page.goto("chrome-extension://ophjlpahpchlmihnnnihgmmeilfjmjjc/index.html#", wait_until="commit")
 
-        # Wait 3 seconds for the page to load
-        time.sleep(3)
+        print("รอการล็อกอิน... กรุณาสแกน QR Code หรือใส่อีเมล/รหัสผ่านบนเบราว์เซอร์")
 
-        # Login Line
-        page.fill('input[name="email"]', email)
-        page.fill('input[name="password"]', password)
-        login_button = page.wait_for_selector('span:text("Log in")')
-        # Search Log in text
-        current_element = login_button
-        # Find parentElement from text "Log in"
-        for _ in range(2):
-            current_element = current_element.evaluate_handle("e => e.parentElement")
-        # Serach all button in parentElement
-        login_button_list = current_element.query_selector_all("button")
-        # Click button login
-        login_button_list[0].click()
-
-        # Wait 3 seconds for the page to load
-        time.sleep(3)
-
-        # Open Chat Category
-        find_chat = page.wait_for_selector('[aria-label="Chat"]')
+        # รอจนกว่าผู้ใช้จะล็อกอินสำเร็จ โดยรอให้ปุ่มแชทปรากฏ (timeout=0 คือรอแบบไม่มีกำหนดเวลา)
+        find_chat = page.wait_for_selector('[aria-label="Chat"]', timeout=0)
+        print("ล็อกอินสำเร็จ! กำลังเข้าสู่แชท Krungthai Connext...")
         find_chat.click()
+        
         # Wait 3 seconds for the page to load
         time.sleep(3)
+        
         # Search Chat Krungthai Connext
         krungthai_chat = page.wait_for_selector("span:text('Krungthai Connext')")
         # Find parentElement from text "Krungthai Connext"
@@ -82,12 +53,18 @@ def test_krungthai():
         # Find all element attribute data-message-content start with text "เงินเข้า"
         locator = page.locator("xpath=//*[starts-with(@data-message-content, 'เงินเข้า')]")
         # Count all element found
-        last_count = locator.count()  # เก็บค่า count ของครั้งแรก
+        last_count = locator.count()  
+        
         # Check element start with text "เงินเข้า"
         assert last_count > 0, "ไม่พบ element ที่ขึ้นต้นด้วย 'เงินเข้า'"
+        print(f"พบประวัติเงินเข้า {last_count} รายการ กำลังเริ่มระบบ Monitoring...")
 
-        # Write data to transetion_history.txt
-        with open(base_dir + "/logs/transaction_krungthai.txt", "w", encoding="utf-8") as f:
+        # จัดการโฟลเดอร์ logs ให้แน่ใจว่าถูกสร้างไว้แล้ว
+        log_path = os.path.join(base_dir, "logs", "transaction_krungthai.txt")
+        os.makedirs(os.path.dirname(log_path), exist_ok=True)
+
+        # Write data to transaction_krungthai.txt
+        with open(log_path, "w", encoding="utf-8") as f:
             for i in range(last_count):
                 content_div = locator.nth(i).locator("div.content")
                 # Search span all in div.content
@@ -130,19 +107,20 @@ def test_krungthai():
 
                             line = ",".join(texts)
                             new_lines.append(line)
+                            print(f"รายการใหม่เข้า: {line}")
 
                         except Exception as e:
-                            print("Error")
+                            print(f"เกิดข้อผิดพลาดในการอ่านข้อความใหม่: {e}")
 
                     # Read old file if have
                     try:
-                        with open(base_dir + "/logs/transaction_krungthai.txt", "r", encoding="utf-8") as f:
+                        with open(log_path, "r", encoding="utf-8") as f:
                             old_lines = f.readlines()
                     except FileNotFoundError:
                         old_lines = []
 
                     # Write new data and new data to top
-                    with open(base_dir + "/logs/transaction_krungthai.txt", "w", encoding="utf-8") as f:
+                    with open(log_path, "w", encoding="utf-8") as f:
                         for line in new_lines:
                             f.write(line + "\n")
                         f.writelines(old_lines)
@@ -151,7 +129,7 @@ def test_krungthai():
                     last_count = current_count
             
         except KeyboardInterrupt:
-            print("\n ตรวจพบ Ctrl+C - กำลังปิด browser...")
+            print("\nตรวจพบ Ctrl+C - กำลังปิด browser...")
 
         finally:
             context.close()
